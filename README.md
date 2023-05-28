@@ -1,7 +1,3 @@
-~ To Do Before Committing:
-	- find and flesh-out some alternative MC solutions (maybe even implement them if easy enough)
-	- rename "mystery" marching cubes to what it actually is
-
 ~~~ Marching Cubes ~~~
 
 ~ How To Use:
