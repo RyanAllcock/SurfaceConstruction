@@ -1,6 +1,7 @@
 # Marching Cubes
 
 ## How To Use
+- preview and make program using .DLL files located in deploy folder
 - make sure GLEW and GLM header files are present
 - make using Makefile on Windows operating system
 - execute using cubes.exe
