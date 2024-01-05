@@ -62,31 +62,26 @@ void Transform::dolly(glm::vec3 pivot, float distance){
 // mode methods
 
 glm::mat4 Camera::setFree(){
-	mode = std::make_unique<CameraFree>(transform);
+	mode.reset(new CameraFree(transform));
 	return transform.getView();
 }
 
 glm::mat4 Camera::setFocus(glm::vec3 target){
-	mode = std::make_unique<CameraFocus>(transform, target);
+	mode.reset(new CameraFocus(transform, target));
 	return transform.getView();
 }
 
 // input methods
 
-Camera::Camera(glm::vec3 p, float rSens, float mSens, float aspectRatio, float fov, float near, float far) : transform(p) {
-	
-	// settings
-	rotateSensitivity = rSens;
-	moveSensitivity = mSens;
+Camera::Camera(glm::vec3 p, float rSens, float mSens, float aspectRatio, float fov, float near, float far) : transform(p), 
+	rotateSensitivity(rSens), moveSensitivity(mSens), // settings
+	mode(new CameraFree(transform)) { // mode
 	
 	// projection
+	view = transform.getView();
 	float fovx = (fov * PI / 180.f);
 	float fovy = ((float)(2.0 * atan(tan(fovx / 2.0) / aspectRatio)));
 	projection = glm::perspective(fovy, aspectRatio, near, far);
-	
-	// mode
-	mode = std::make_unique<CameraFree>(transform);
-	view = transform.getView();
 }
 
 void Camera::input(int &select, int spin, int &release, float motion[3], float turning[2]){
