@@ -67,6 +67,9 @@ public:
 	// motion
 	void keyMovement(float (&k)[3]);
 	void mouseMovement(float (&m)[2]);
+	
+	// properties
+	float getAspectRatio();
 };
 
 #endif

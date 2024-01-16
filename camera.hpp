@@ -74,6 +74,7 @@ public:
 	Camera(glm::vec3 p, float rSens, float mSens, float aspectRatio, float fov, float near, float far);
 	void input(int &select, int spin, int &release, float motion[3], float turning[2]);
 	void uniforms(glm::mat4 &view, glm::mat4 &projection, glm::mat4 &rotation, glm::vec3 &position);
+	void setProjection(float aspectRatio, float fov, float near, float far);
 };
 
 #endif

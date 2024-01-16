@@ -17,7 +17,6 @@
 
 #define CAMERA_ROTATE_SENS .8f
 #define CAMERA_MOVE_SENS .002f
-#define CAMERA_ASPECT_RATIO ((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT)
 #define CAMERA_FIELD_OF_VISION 70.f
 #define PROJECTION_NEAR .1f
 #define PROJECTION_FAR 100.f
@@ -33,7 +32,7 @@ int main(int argc, char *argv[]){
 	Window window("Marching Cubes", WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_PERSEC, INPUT_PERSEC);
 	
 	// camera
-	Camera camera(glm::vec3(0, 0, 3), CAMERA_ROTATE_SENS, CAMERA_MOVE_SENS, CAMERA_ASPECT_RATIO, CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
+	Camera camera(glm::vec3(0, 0, 3), CAMERA_ROTATE_SENS, CAMERA_MOVE_SENS, window.getAspectRatio(), CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
 	
 	// terrain
 	std::vector<float> points, triangles;
@@ -54,8 +53,14 @@ int main(int argc, char *argv[]){
 	while(running){
 		
 		// input
-		if(!window.get())
-			running = false;
+		switch(window.get()){
+			case -1:
+				running = false;
+				break;
+			case 2: // WIP : just chonks-up to the viewport
+				camera.setProjection(window.getAspectRatio(), CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
+				break;
+		}
 		
 		// screen
 		if(window.cap(0)){

@@ -12,7 +12,7 @@ Window::Window(const char *name, int w, int h, float frameRate, float inputRate)
 		// printf("SDL init failed: %s\n", SDL_GetError()); // WIP
 		return;
 	}
-	if((window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL)) == NULL){
+	if((window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)) == NULL){
 		// printf("SDL window creation failed: %s\n", SDL_GetError()); // WIP
 		return;
 	}
@@ -110,7 +110,7 @@ int Window::get(){
 	while(SDL_PollEvent(&event)){
 		switch(event.type){
 			case SDL_QUIT:
-				return 0;
+				return -1;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				if(event.button.button < WINDOW_MOUSECODES) mouseMap[event.button.button] = (mouseMap[event.button.button] == 0 ? 1 : -1);
@@ -149,6 +149,18 @@ int Window::get(){
 					case SDL_WINDOWEVENT_LEAVE:
 						isCursorPresent = false;
 						break;
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+						width = event.window.data1;
+						height = event.window.data2;
+						glViewport(0, 0, width, height);
+						return 1;
+						break;
+					case SDL_WINDOWEVENT_RESIZED:
+						width = event.window.data1;
+						height = event.window.data2;
+						glViewport(0, 0, width, height);
+						return 2;
+						break;
 				}
 				break;
 			default:
@@ -171,7 +183,7 @@ int Window::get(){
 		output(InputTabout) = -1;
 	}
 	
-	return 1;
+	return 0;
 }
 
 int& Window::output(int id){
@@ -194,6 +206,12 @@ void Window::mouseMovement(float (&m)[2]){
 	m[0] = ((float)(2.f * mouseMove[0]) / (float)width) * (float)isWindowFocused;
 	m[1] = ((float)(2.f * mouseMove[1]) / (float)height) * (float)isWindowFocused;
 	mouseMove[0] = mouseMove[1] = 0;
+}
+
+// properties
+
+float Window::getAspectRatio(){
+	return (float)width / height;
 }
 
 // internal methods

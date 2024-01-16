@@ -1,28 +1,30 @@
 CXX := g++
 CXXFLAGS := -o
 
-main: main.cpp temp/camera.o temp/window.o temp/shader.o temp/terrain3d.o temp/noise.o temp/marchingcubes.o
-	$(CXX) $(CXXFLAGS) cubes.exe temp/camera.o temp/window.o temp/shader.o temp/terrain3d.o temp/noise.o temp/marchingcubes.o main.cpp -lopenGL32 -lmingw32 -lSDL2main -lSDL2 -lglew32
+BIN := temp/
 
-temp/camera.o: camera.cpp temp
-	$(CXX) -c $(CXXFLAGS) temp/camera.o camera.cpp
+main: main.cpp $(BIN)camera.o $(BIN)window.o $(BIN)shader.o $(BIN)terrain3d.o $(BIN)noise.o $(BIN)marchingcubes.o
+	$(CXX) $(CXXFLAGS) cubes.exe $(BIN)camera.o $(BIN)window.o $(BIN)shader.o $(BIN)terrain3d.o $(BIN)noise.o $(BIN)marchingcubes.o main.cpp -lopenGL32 -lmingw32 -lSDL2main -lSDL2 -lglew32
 
-temp/window.o: window.cpp temp
-	$(CXX) -c $(CXXFLAGS) temp/window.o window.cpp
+$(BIN)camera.o: camera.cpp
+	$(CXX) -c $(CXXFLAGS) $(BIN)camera.o camera.cpp
 
-temp/shader.o: shader.cpp temp
-	$(CXX) -c $(CXXFLAGS) temp/shader.o shader.cpp
+$(BIN)window.o: window.cpp
+	$(CXX) -c $(CXXFLAGS) $(BIN)window.o window.cpp
 
-temp/terrain3d.o: terrain3d.cpp temp
-	$(CXX) -c $(CXXFLAGS) temp/terrain3d.o terrain3d.cpp
+$(BIN)shader.o: shader.cpp
+	$(CXX) -c $(CXXFLAGS) $(BIN)shader.o shader.cpp
 
-temp/noise.o: noise.cpp temp
-	$(CXX) -c $(CXXFLAGS) temp/noise.o noise.cpp
+$(BIN)terrain3d.o: terrain3d.cpp
+	$(CXX) -c $(CXXFLAGS) $(BIN)terrain3d.o terrain3d.cpp
 
-temp/marchingcubes.o: marchingcubes.cpp temp
-	$(CXX) -c $(CXXFLAGS) temp/marchingcubes.o marchingcubes.cpp
+$(BIN)noise.o: noise.cpp
+	$(CXX) -c $(CXXFLAGS) $(BIN)noise.o noise.cpp
 
-temp:
+$(BIN)marchingcubes.o: marchingcubes.cpp
+	$(CXX) -c $(CXXFLAGS) $(BIN)marchingcubes.o marchingcubes.cpp
+
+prepare:
 	mkdir temp
 
 clean:

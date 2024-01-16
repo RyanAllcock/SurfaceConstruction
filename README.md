@@ -2,8 +2,6 @@
 
 ## How To Use
 - preview and make program using .DLL files located in deploy folder
-- make sure GLEW and GLM header files are present
-- make using Makefile on Windows operating system
 - execute using cubes.exe
 	- *p* changes Marching Cubes type
 	- *w* *a* *s* *d* *lctrl* *space* to move free camera
@@ -11,6 +9,12 @@
 		- *right-click* to pivot camera around origin
 		- *tab* to free camera
 	- *alt* to free mouse from window
+	- drag corners of the window to resize
+
+## How To Compile
+- ensure MinGW compiler or compatible alternative are installed and accessible within the current environment
+- ensure GLEW and GLM header files are present
+- execute *make prepare* then *make* from the Makefile on Windows operating system
 
 ## Modules
 - Marching Cubes

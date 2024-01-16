@@ -79,9 +79,7 @@ Camera::Camera(glm::vec3 p, float rSens, float mSens, float aspectRatio, float f
 	
 	// projection
 	view = transform.getView();
-	float fovx = (fov * PI / 180.f);
-	float fovy = ((float)(2.0 * atan(tan(fovx / 2.0) / aspectRatio)));
-	projection = glm::perspective(fovy, aspectRatio, near, far);
+	setProjection(aspectRatio, fov, near, far);
 }
 
 void Camera::input(int &select, int spin, int &release, float motion[3], float turning[2]){
@@ -102,6 +100,12 @@ void Camera::uniforms(glm::mat4 &view, glm::mat4 &projection, glm::mat4 &rotatio
 	projection = this->projection;
 	rotation = transform.rotation;
 	position = transform.position;
+}
+
+void Camera::setProjection(float aspectRatio, float fov, float near, float far){
+	float fovr = (fov * PI / 180.f);
+	float fovy = aspectRatio > 1 ? fovr : 2.f * atan(tan(fovr / 2.f) / aspectRatio);
+	projection = glm::perspective(fovy, aspectRatio, near, far);
 }
 
 // Camera Mode
