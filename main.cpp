@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 			case -1:
 				running = false;
 				break;
-			case 2: // WIP : just chonks-up to the viewport
+			case 2:
 				camera.setProjection(window.getAspectRatio(), CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
 				break;
 		}
