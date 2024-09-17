@@ -2,7 +2,7 @@
 #define HEADER_TERRAIN3D
 
 #include "noise.hpp"
-#include "marchingcubes.hpp"
+#include "../source/marchingcubes.hpp"
 
 #include <vector> // data storage
 #include <memory> // permutation class persistence
