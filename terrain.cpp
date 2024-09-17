@@ -1,4 +1,4 @@
-#include "terrain3d.hpp"
+#include "terrain.hpp"
 
 Terrain3D::Terrain3D(int x, int y, int z){
 	pointSize[0] = x;

@@ -1,7 +1,7 @@
 #include "lib/window.hpp"
-#include "lib/terrain3d.hpp"
 #include "lib/shader.hpp"
 #include "lib/camera.hpp"
+#include "terrain.hpp"
 
 #ifndef GLEW_STATIC
 #define GLEW_STATIC

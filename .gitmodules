@@ -2,3 +2,7 @@
 	path = source
 	url = https://github.com/RyanAllcock/SurfaceConstruction.git
 	branch = source
+[submodule "lib/ProceduralNoise"]
+	path = lib/noise
+	url = https://github.com/RyanAllcock/ProceduralNoise.git
+	branch = source
