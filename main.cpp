@@ -1,4 +1,4 @@
-#include "lib/window.hpp"
+#include "lib/window/window.hpp"
 #include "lib/shader.hpp"
 #include "lib/camera.hpp"
 #include "terrain.hpp"
@@ -26,10 +26,25 @@
 #define TERRAIN_Z 100
 #define MC_THRESHOLD 0.2
 
+enum Input{
+	InputForward, InputBackward, InputLeft, InputRight, InputUp, InputDown,  // movement
+	InputSelect, InputRelease, // camera
+	InputFocus, InputSpin, // mouse
+	InputTest, // shader
+	InputSwitch, // terrain
+	InputTabout}; // window
+
 int main(int argc, char *argv[]){
 	
 	// window
-	Window window("Marching Cubes", WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_PERSEC, INPUT_PERSEC);
+	Window window("Marching Cubes", WindowResize | WindowGraphic, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_PERSEC, INPUT_PERSEC);
+	InputBind input(window.getMouseMotionHandle(), window.getMousePositionHandle());
+	input.bindAll(std::vector<std::pair<int,WindowKey>>{
+		{InputForward, KeyW}, {InputBackward, KeyW}, {InputLeft, KeyA}, {InputRight, KeyD}, 
+		{InputUp, KeySpace}, {InputDown, KeyLeftControl}, {InputSelect, KeyE}, {InputRelease, KeyTab}, 
+		{InputTest, KeyT}, {InputSwitch, KeyP}, {InputTabout, KeyLeftAlt}}, window);
+	input.bindAll(std::vector<std::pair<int,WindowButton>>{
+		{InputFocus, MouseLeftClick}, {InputSpin, MouseRightClick}}, window);
 	
 	// camera
 	Camera camera(glm::vec3(0, 0, 3), CAMERA_ROTATE_SENS, CAMERA_MOVE_SENS, window.getAspectRatio(), CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
@@ -49,27 +64,30 @@ int main(int argc, char *argv[]){
 	
 	// loop
 	window.timer();
-	bool running = true;
-	while(running){
+	bool isRunning = true;
+	while(isRunning){
 		
 		// input
-		switch(window.get()){
-			case -1:
-				running = false;
-				break;
-			case 2:
-				camera.setProjection(window.getAspectRatio(), CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
-				break;
+		WindowState windowState;
+		while((windowState = window.get(), windowState) != WindowDefault){
+			switch(windowState){
+				case WindowQuit:
+					isRunning = false;
+					break;
+				case WindowResized:
+					camera.setProjection(window.getAspectRatio(), CAMERA_FIELD_OF_VISION, PROJECTION_NEAR, PROJECTION_FAR);
+					break;
+			}
 		}
 		
 		// screen
-		if(window.cap(0)){
+		if(window.cap(WindowDisplay)){
 			
 			// camera
 			float move[3] = { 0.f, 0.f, 0.f };
 			float look[2];
-			window.mouseMovement(look);
-			camera.input(window.output(InputSelect), window.output(InputSpin), window.output(InputRelease), move, look);
+			input.getMouseMotion(look);
+			camera.input(input.getPress(InputSelect), input.getHold(InputSpin), input.getPress(InputRelease), move, look);
 			glm::mat4 view, projection, rotation;
 			glm::vec3 position;
 			camera.uniforms(view, projection, rotation, position);
@@ -80,8 +98,8 @@ int main(int argc, char *argv[]){
 			tshader.uniform(glm::value_ptr(defmat), glm::value_ptr(view), glm::value_ptr(projection), glm::value_ptr(position));
 			
 			// display
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			if(window.output(InputTest) != 0)
+			window.clear();
+			if(input.getHold(InputTest))
 				pshader.display();
 			else
 				tshader.display();
@@ -89,20 +107,30 @@ int main(int argc, char *argv[]){
 		}
 		
 		// simulation
-		if(window.cap(1)){
+		if(window.cap(WindowInput)){
+			
+			// camera
+			if(input.getInactivePress(InputFocus)){
+				window.lockCursor();
+				input.setActive(true);
+			}
+			if(input.getPress(InputTabout)){
+				window.unlockCursor();
+				input.setActive(false);
+			}
 			
 			// movement
 			float look[2] = { 0.f, 0.f };
 			float move[3];
-			window.keyMovement(move);
-			camera.input(window.output(InputSelect), window.output(InputSpin), window.output(InputRelease), move, look);
+			move[0] = input.getHold(InputRight) - input.getHold(InputLeft);
+			move[1] = input.getHold(InputUp) - input.getHold(InputDown);
+			move[2] = input.getHold(InputForward) - input.getHold(InputBackward);
+			camera.input(input.getPress(InputSelect), input.getHold(InputSpin), input.getPress(InputRelease), move, look);
 			
 			// scene
-			int &m = window.output(InputSwitch);
-			if(m == 1){
+			if(input.getPress(InputSwitch)){
 				terrain.switchSurface(points.data() + terrain.pointTotal * 3, MC_THRESHOLD, triangles);
 				tshader.reset(triangles.data(), terrain.faceTotal);
-				m = -1;
 			}
 		}
 	}

@@ -82,17 +82,11 @@ Camera::Camera(glm::vec3 p, float rSens, float mSens, float aspectRatio, float f
 	setProjection(aspectRatio, fov, near, far);
 }
 
-void Camera::input(int &select, int spin, int &release, float motion[3], float turning[2]){
+void Camera::input(int select, int spin, int release, float motion[3], float turning[2]){
 	view = mode->look(spin, rotateSensitivity * turning[0], rotateSensitivity * turning[1]);
 	view = mode->move(moveSensitivity * glm::vec3(motion[0], motion[1], motion[2]));
-	if(select == 1){ // set pivot focus mode
-		view = setFocus(glm::vec3(0.f, 0.f, 0.f));
-		select = -1;
-	}
-	if(release == 1){ // set free move mode
-		view = setFree();
-		release = -1;
-	}
+	if(select) view = setFocus(glm::vec3(0.f, 0.f, 0.f)); // set pivot focus mode
+	if(release) view = setFree(); // set free move mode
 }
 
 void Camera::uniforms(glm::mat4 &view, glm::mat4 &projection, glm::mat4 &rotation, glm::vec3 &position){

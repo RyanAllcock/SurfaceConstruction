@@ -6,3 +6,6 @@
 	path = lib/noise
 	url = https://github.com/RyanAllcock/ProceduralNoise.git
 	branch = source
+[submodule "lib/DesktopWindow"]
+	path = lib/window
+	url = https://github.com/RyanAllcock/DesktopWindow.git
